@@ -89,6 +89,13 @@ jobs:
         with:
           name: ipq807x-images
           path: ipq807xx-images.tar
+      - name: Package packages
+        run: tar -cvf ipq807xx-packages.tar bin/packages
+      - name: Upload packages
+        uses: actions/upload-artifact@v4
+        with:
+          name: ipq807x-packages
+          path: ipq807xx-packages.tar
 
   release:
     name: Create release
@@ -107,7 +114,9 @@ jobs:
       - name: Create release
         uses: softprops/action-gh-release@master
         with:
-          files: bin/targets/qualcommax/ipq807x/*
+          files: |
+            bin/targets/qualcommax/ipq807x/*
+            ipq807xx-packages.tar
           tag_name: ${{ env.RELEASE_PREFIX }}-${{ env.RELEASE_DATE }}
           name: Updated prebuilt images ${{ env.RELEASE_DATE }}
           body: |
