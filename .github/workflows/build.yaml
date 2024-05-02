@@ -1,5 +1,7 @@
 name: Build OpenWrt for specific target and release
 
+runs-on: self-hosted
+
 on:
   workflow_dispatch:
   push:
