@@ -60,10 +60,6 @@ jobs:
         with:
           repository: ${{ env.REMOTE_REPOSITORY }}
           ref: ${{ env.REMOTE_BRANCH }}
-      - name: Change NSS-Packages branch
-        run: |
-          sed -i 's|src-git nss_packages https://github.com/qosmio/nss-packages.git;NSS-12.5-K6.x|src-git nss_packages https://github.com/qosmio/nss-packages.git;NSS-12.5-K6.x-NAPI|' feeds.conf.default
-          cat feeds.conf.default
       - name: Checkout current repository
         uses: actions/checkout@v4
         with:
@@ -85,8 +81,10 @@ jobs:
         run: |
           mkdir -p ${{ env.CUSTOM_FILES_PATH }}
           mv custom_repo/${{ env.CUSTOM_FILES_PATH }}* ${{ env.CUSTOM_FILES_PATH }}
+      - name: Download dependencies
+        run: make download V=sc -j$(nproc)
       - name: Build the firmware image
-        run: make download world V=sc -j$(nproc)
+        run: make world V=sc -j$(nproc)
       - name: Package output
         run: tar -cvf ipq807xx-images.tar bin/targets/qualcommax/ipq807x
       - name: Upload artifacts
