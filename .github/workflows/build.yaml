@@ -35,7 +35,7 @@ jobs:
           echo "commit2=$COMMIT2" >> $GITHUB_OUTPUT
 
           # Fetch latest release of current repository
-          LATEST_RELEASE=$(gh api repos/${{ github.repository }}/releases/latest --jq '.body')
+          LATEST_RELEASE=''
 
           # Extract commits from release body
           OPENWRT_COMMIT=$(echo "$LATEST_RELEASE" | grep -oP 'Openwrt Commit: \K[a-f0-9]+')
@@ -45,7 +45,7 @@ jobs:
           if [ "$COMMIT1" = "$OPENWRT_COMMIT" ] && [ "$COMMIT2" = "$NSS_COMMIT" ]; then
             echo "commits_match=true" >> $GITHUB_OUTPUT
           else
-            echo "commits_match=false" >> $GITHUB_OUTPUT
+            echo "commits_match=true" >> $GITHUB_OUTPUT
           fi
 
   build:
