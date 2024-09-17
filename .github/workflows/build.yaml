@@ -26,7 +26,27 @@ jobs:
     steps:
       - name: Fetch latest commits and compare
         run: |
-          echo "commits_match=true" >> $GITHUB_OUTPUT
+          # Fetch latest commit from OPENWRT_REPOSITORY
+          COMMIT1=$(gh api repos/${{ env.OPENWRT_REPOSITORY }}/commits/${{ env.OPENWRT_BRANCH }} --jq '.sha')
+          echo "commit1=$COMMIT1" >> $GITHUB_OUTPUT
+
+          # Fetch latest commit from NSS_PACKAGES_REPOSITORY
+          COMMIT2=$(gh api repos/${{ env.NSS_PACKAGES_REPOSITORY }}/commits/${{ env.NSS_PACKAGES_REPOSITORY_BRANCH }} --jq '.sha')
+          echo "commit2=$COMMIT2" >> $GITHUB_OUTPUT
+
+          # Fetch latest release of current repository
+          LATEST_RELEASE=$(gh api repos/${{ github.repository }}/releases/latest --jq '.body')
+
+          # Extract commits from release body
+          OPENWRT_COMMIT=$(echo "$LATEST_RELEASE" | grep -oP 'Openwrt Commit: \K[a-f0-9]+')
+          NSS_COMMIT=$(echo "$LATEST_RELEASE" | grep -oP 'NSS Packages Commit: \K[a-f0-9]+')
+
+          # Compare commits
+          if [ "$COMMIT1" = "$OPENWRT_COMMIT" ] && [ "$COMMIT2" = "$NSS_COMMIT" ]; then
+            echo "commits_match=true" >> $GITHUB_OUTPUT
+          else
+            echo "commits_match=false" >> $GITHUB_OUTPUT
+          fi
 
   build:
     name: Build OpenWrt
