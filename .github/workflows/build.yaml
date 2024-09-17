@@ -128,8 +128,10 @@ jobs:
             gh release delete "$VERSION" --cleanup-tag -y
           fi
 
+          FILES_TO_UPLOAD=$(find ./firmware -maxdepth 1 -type f)
+
           # Create the new release
-          gh release create "$VERSION" ./firmware/*.* \ 
+          gh release create "$VERSION" $FILES_TO_UPLOAD \
             --title "$VERSION" \
             --notes "$RELEASE_NOTES"
 
