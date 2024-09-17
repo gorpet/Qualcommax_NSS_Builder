@@ -50,6 +50,8 @@ jobs:
 
   build:
     name: Build OpenWrt
+    needs: compare-commits
+    if: needs.compare-commits.outputs.commits_match == 'false' || github.event_name == 'workflow_dispatch' || github.event_name == 'push'
     runs-on: ubuntu-24.04
     steps:
       - name: Install Dependencies
