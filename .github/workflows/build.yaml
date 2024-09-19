@@ -104,6 +104,8 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: ipq807x-images
+      - name: Display structure of downloaded files
+        run: ls -R
       - name: Get current date
         run: echo "RELEASE_DATE=$(date +%F)" >> $GITHUB_ENV
       - name: Create release
